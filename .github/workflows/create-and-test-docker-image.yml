@@ -20,17 +20,17 @@ jobs:
       sqlsrv:
         image: mcr.microsoft.com/mssql/server:2022-latest
         env:
-          ACCEPT_EULA: Y
-          MSSQL_PID: Developer
-          SA_PASSWORD: ${{ secrets.TESTS_SQLSRV_DB_SECRET }}
+          ACCEPT_EULA: "Y"
+          MSSQL_PID: "Developer"
+          MSSQL_SA_PASSWORD: ${{ secrets.TESTS_SQLSRV_DB_SECRET }}
         ports:
           - 1433:1433
         options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$SA_PASSWORD\" -N -C -Q \"SELECT 1\" -b -o /dev/null || exit 1"
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${{ secrets.TESTS_SQLSRV_DB_SECRET }}' -N -C -Q 'SELECT 1' -b -o /dev/null || exit 1"
           --health-interval 10s
           --health-timeout 10s
           --health-retries 30
-          --health-start-period 20s
+          --health-start-period 30s
     steps:
       - uses: actions/checkout@master
 
@@ -58,7 +58,13 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ inputs.image-tag }}
-          options: -v ${{ github.workspace }}/.ci/tests:/work -e MSSQL_HOST=sqlsrv -e MSSQL_PORT=1433 -e MSSQL_DATABASE=master -e MSSQL_USERNAME=sa -e MSSQL_PASSWORD=${{ secrets.TESTS_SQLSRV_DB_SECRET }}
+          options: >-
+            -v ${{ github.workspace }}/.ci/tests:/work
+            -e MSSQL_HOST=sqlsrv
+            -e MSSQL_PORT=1433
+            -e MSSQL_DATABASE=master
+            -e MSSQL_USERNAME=sa
+            -e MSSQL_PASSWORD=${{ secrets.TESTS_SQLSRV_DB_SECRET }}
           run: php /work/test_connection.php
 
       - name: Push ${{ inputs.image-tag }}
