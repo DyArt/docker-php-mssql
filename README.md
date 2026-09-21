@@ -14,6 +14,12 @@ To run a container with an image, you can also use `docker run namoshek/php-mssq
 
 For the moment, the primary goal of this repository is to support the following configurations:
 
+- PHP 8.5 (based on Alpine Linux) + Microsoft ODBC Driver 18 + sqlsrv + pdo_sqlsrv (FPM and CLI)
+
+  - With bcmath, ds, exif, gd, intl, opcache, pcntl, redis, and zip as additional PHP extensions
+  - With pcov as additional PHP extension on the CLI image
+  - Tags: `dyart1980/php-mssql:8.4-fpm-alpine`
+
 - PHP 8.4 (based on Alpine Linux) + Microsoft ODBC Driver 18 + sqlsrv + pdo_sqlsrv (FPM and CLI)
 
   - With nano, nodejs, npm, yarn and composer added to the CLI version
