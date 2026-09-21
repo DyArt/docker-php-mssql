@@ -14,9 +14,9 @@ on:
 
     secrets:
       DOCKER_USERNAME:
-        required: true
+        required: false
       DOCKER_PASSWORD:
-        required: true
+        required: false
       TESTS_SQLSRV_DB_SECRET:
         required: true
 
