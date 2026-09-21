@@ -92,8 +92,8 @@ jobs:
           image: ${{ inputs.image-tag }}
           options: >-
             -v ${{ github.workspace }}/.ci/tests:/work
-            --network ${{ job.container.network }}
-            -e MSSQL_HOST=sqlsrv
+            --add-host=host.docker.internal:host-gateway
+            -e MSSQL_HOST=host.docker.internal
             -e MSSQL_PORT=1433
             -e MSSQL_DATABASE=master
             -e MSSQL_USERNAME=sa
