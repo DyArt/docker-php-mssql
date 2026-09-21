@@ -112,10 +112,6 @@ Building the PHP 8.2 CLI image looks like this:
 docker build -t namoshek/php-mssql:8.2-cli 8.2/cli
 ```
 
-## Contributing
-
-If you want to contribute the sources for other PHP versions, I'll appreciate it. Please send a pull request.
-
 ## License
 
 The code is licensed under the [MIT license](LICENSE).
