@@ -1,15 +1,25 @@
 name: Create and test Docker image
 
+name: Create and test Docker image
+
 on:
   workflow_call:
     inputs:
       source-directory:
-        description: 'The source directory relative to the repository root.'
+        description: The source directory relative to the repository root.
         type: string
         required: true
       image-tag:
-        description: 'The image tag to use for the Docker image.'
+        description: The image tag to use for the Docker image.
         type: string
+        required: true
+
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      TESTS_SQLSRV_DB_SECRET:
         required: true
 
 jobs:
