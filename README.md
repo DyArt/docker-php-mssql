@@ -5,6 +5,8 @@ the [Microsoft SQL Server Driver](https://github.com/Microsoft/msphpsql) already
 
 The images are built and retagged based on their corresponding upstream once a week at night.
 
+Many thanks to Namoshek. Once I've confirmed that version 8.5 works correctly after testing, I'll submit a pull request to his repository.
+
 ## Usage
 
 You can pull one of the images with `docker pull namoshek/php-mssql:<tag>`.
