@@ -1,7 +1,5 @@
 name: Create and test Docker image
 
-name: Create and test Docker image
-
 on:
   workflow_call:
     inputs:
@@ -26,6 +24,7 @@ jobs:
   build_and_test:
     name: Build, test and publish Docker image
     runs-on: ubuntu-latest
+
     services:
       sqlsrv:
         image: mcr.microsoft.com/mssql/server:2022-latest
@@ -35,41 +34,65 @@ jobs:
           MSSQL_SA_PASSWORD: ${{ secrets.TESTS_SQLSRV_DB_SECRET }}
         ports:
           - 1433:1433
-        options: >-
-          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${{ secrets.TESTS_SQLSRV_DB_SECRET }}' -N -C -Q 'SELECT 1' -b -o /dev/null || exit 1"
-          --health-interval 10s
-          --health-timeout 10s
-          --health-retries 30
-          --health-start-period 30s
+
     steps:
-      - uses: actions/checkout@master
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Wait for SQL Server
+        env:
+          MSSQL_SA_PASSWORD: ${{ secrets.TESTS_SQLSRV_DB_SECRET }}
+        run: |
+          for attempt in {1..60}; do
+            if docker exec "${{ job.services.sqlsrv.id }}" \
+              /opt/mssql-tools18/bin/sqlcmd \
+              -S localhost \
+              -U sa \
+              -P "$MSSQL_SA_PASSWORD" \
+              -N -C \
+              -Q "SELECT 1" \
+              -b \
+              -o /dev/null; then
+              echo "SQL Server is ready."
+              exit 0
+            fi
+
+            echo "Waiting for SQL Server ($attempt/60)..."
+            sleep 2
+          done
+
+          echo "SQL Server did not become ready in time."
+          docker logs "${{ job.services.sqlsrv.id }}"
+          exit 1
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v3
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v4
+      - name: Log in to Docker Hub
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build ${{ inputs.image-tag }}
+      - name: Build ${{ inputs.image-tag }} for testing
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.source-directory }}
           tags: ${{ inputs.image-tag }}
           platforms: linux/amd64
           load: true
-          
+
       - name: Test SQL Server connection
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ inputs.image-tag }}
           options: >-
             -v ${{ github.workspace }}/.ci/tests:/work
+            --network ${{ job.container.network }}
             -e MSSQL_HOST=sqlsrv
             -e MSSQL_PORT=1433
             -e MSSQL_DATABASE=master
@@ -78,8 +101,8 @@ jobs:
           run: php /work/test_connection.php
 
       - name: Push ${{ inputs.image-tag }}
-        uses: docker/build-push-action@v7
         if: ${{ github.event_name != 'pull_request' }}
+        uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.source-directory }}
           tags: ${{ inputs.image-tag }}
