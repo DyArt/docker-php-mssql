@@ -20,7 +20,7 @@ For the moment, the primary goal of this repository is to support the following 
 
   - With bcmath, ds, exif, gd, intl, opcache, pcntl, redis, and zip as additional PHP extensions
   - With pcov as additional PHP extension on the CLI image
-  - Tags: `dyart1980/php-mssql:8.4-fpm-alpine`
+  - Tags: `dyart1980/php-mssql:8.5-fpm-alpine`
 
 - PHP 8.4 (based on Alpine Linux) + Microsoft ODBC Driver 18 + sqlsrv + pdo_sqlsrv (FPM and CLI)
 
