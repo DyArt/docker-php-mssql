@@ -17,7 +17,7 @@ RUN curl -O https://download.microsoft.com/download/ade174b7-8cea-4543-91a6-c33a
     && rm *.apk *.sig
 
 # Retrieve the script used to install PHP extensions from the source container.
-#COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/install-php-extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/install-php-extensions
 
 # Install required PHP extensions and all their prerequisites available via apt.
 RUN chmod uga+x /usr/bin/install-php-extensions \
