@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:latest
+FROM dunglas/frankenphp
 
 ENV ACCEPT_EULA=Y
 
