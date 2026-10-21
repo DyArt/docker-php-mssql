@@ -36,6 +36,14 @@ jobs:
       source-directory: 8.5/fpm
       image-tag: dyart1980/php-mssql:8.5-fpm
 
+  build-8_5-frankenphp:
+    uses: ./.github/workflows/create-and-test-docker-image.yml
+    name: dyart1980/frankenphp-mssql:8.5
+    secrets: inherit
+    with:
+      source-directory: frankenphp/8.5
+      image-tag: dyart1980/frankenphp-mssql:8.5
+
   # PHP 8.4 Alpine Linux with Swoole Extension
   # build-8_4-cli-alpine-swoole:
   #   uses: ./.github/workflows/create-and-test-docker-image.yml
