@@ -8,6 +8,7 @@ on:
     types: [opened, synchronize, reopened]
   schedule:
     - cron: "0 2 * * 0" # Weekly on Sundays at 02:00
+  workflow_dispatch: {}
 
 jobs:
   # PHP 8.5 Alpine
