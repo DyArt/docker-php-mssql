@@ -11,6 +11,16 @@ on:
   workflow_dispatch: {}
 
 jobs:
+
+  # PHP 8.6 Alpine
+  build-8_6-fpm-alpine:
+    uses: ./.github/workflows/create-and-test-docker-image.yml
+    name: dyart1980/php-mssql:8.6-fpm-alpine
+    secrets: inherit
+    with:
+      source-directory: 8.6/fpm-alpine
+      image-tag: dyart1980/php-mssql:8.6-fpm-alpine
+
   # PHP 8.5 Alpine
   build-8_5-fpm-alpine:
     uses: ./.github/workflows/create-and-test-docker-image.yml
